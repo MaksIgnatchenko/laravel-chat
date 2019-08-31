@@ -14,6 +14,9 @@ services:
     restart: unless-stopped
     depends_on:
       - php
+    networks:
+      - internal
+
   php:
     build: 'docker/php/'
     container_name:  broadcast_php
@@ -24,6 +27,16 @@ services:
       - fpm-sock:/var/run/fpm
     command: /bin/bash -c "/usr/bin/supervisord -n -c /var/www/docker/php/supervisord.conf"
     restart: unless-stopped
+    networks:
+      - internal
 
 volumes:
   fpm-sock:
+
+networks:
+  internal:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.220.0/28
